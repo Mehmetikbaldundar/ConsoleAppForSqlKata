@@ -8,7 +8,7 @@ public class Program
 {
     static void Main(string[] args)
     {
-        string connectionString = "Data Source= Catalog=NORTHWND;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+        string connectionString = "Data Source=GMSK-STJ-1A4NGK\\SQLEXPRESS;Initial Catalog=NORTHWND;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
 
         using (IDbConnection connection = new SqlConnection(connectionString))
         {
@@ -24,15 +24,16 @@ public class Program
                 Console.WriteLine("4. Çalışanlar ve İlgili Bölgeleri");
                 Console.WriteLine("5. Belirli Bir Çalışanın Bölgesi");
                 Console.WriteLine("6. Ürünler ve Kategorileri");
-                Console.WriteLine("7. Çıkış");
+                Console.WriteLine("7. Stok Adedi 20 ile 50 Arasında Olan ve Baş Harfi 'B' Olan Kategorilerdeki Ürünler");
+                Console.WriteLine("8. Çıkış");
 
                 Console.WriteLine("Seçiminizi yapın (1-7):");
                 string optionChoice = Console.ReadLine();
 
-                if (optionChoice == "7")
+                if (optionChoice == "8")
                     break;
 
-                if (optionChoice != "1" && optionChoice != "2" && optionChoice != "3" && optionChoice != "4" && optionChoice != "5" && optionChoice != "6")
+                if (optionChoice != "1" && optionChoice != "2" && optionChoice != "3" && optionChoice != "4" && optionChoice != "5" && optionChoice != "6" && optionChoice != "7")
                 {
                     Console.WriteLine("Geçersiz seçim. Lütfen tekrar deneyin.");
                     continue;
@@ -113,6 +114,18 @@ public class Program
                         query.Select("p.ProductName")
                             .SelectRaw("(SELECT CategoryName FROM Categories WHERE CategoryID = p.CategoryID) AS CategoryName")
                             .From("Products as p");
+                        break;
+                    // Stok adedi 20 ile 50 arasında olan ve baş harfi b olan kategorilerdeki ürünler
+                    case "7":
+                        query = new Query("Products as p")
+                            .WhereBetween("p.UnitsInStock", 20, 50)
+                            .Join("Categories as c", join =>
+                            {
+                                return join.On("c.CategoryID", "p.CategoryID")
+                                .WhereLike("c.CategoryName", "B%");
+                            })
+                            .Select("p.ProductName")
+                            .Select("c.CategoryName");
                         break;
                 }
 

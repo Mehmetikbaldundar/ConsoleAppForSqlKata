@@ -219,3 +219,15 @@ Sorgu Sonuçlari:
 {DapperRow, ProductName = 'Lakkalikööri', CategoryName = 'Beverages'}
 {DapperRow, ProductName = 'Original Frankfurter grüne Soße', CategoryName = 'Condiments'}
 ```
+### **Örnek 7:**
+MSSQL Sorgusu:
+```sql
+SELECT [p].[ProductName], [c].[CategoryName] FROM [Products] AS [p]
+INNER JOIN [Categories] AS [c] ON ([c].[CategoryID] = [p].[CategoryID] AND LOWER([c].[CategoryName]) like @p0) WHERE [p].[UnitsInStock] BETWEEN @p1 AND @p2
+```
+Sorgu Sonuçlari:
+```
+{DapperRow, ProductName = 'Chai', CategoryName = 'Beverages'}
+{DapperRow, ProductName = 'Guaraná Fantástica', CategoryName = 'Beverages'}
+{DapperRow, ProductName = 'Steeleye Stout', CategoryName = 'Beverages'}
+```
